@@ -18,13 +18,19 @@ public class PlayerPersonWithGui extends Player {
 	}
 	
 	public void setOneShip(Ships s) {
-
-		String sn = b.setShip(s, personHidden.getHidden());
+		String sn = b.setShip(s, personHidden.getHidden(), "starting");
 		System.out.println("Running");
 		int row = Integer.valueOf(sn)/10;
 		int col = Integer.valueOf(sn)%10;
 		System.out.println("Stage 1");
 		System.out.println(row);
+		/**
+		System.out.print("Enter the starting column for the " +  s.getName() + " ( " + s.getLength() + " units long) -- > ");
+		int row = getValid();
+		
+		System.out.print("Enter the starting row for the " +  s.getName() + " ( " + s.getLength() + " units long) -- > ");
+		int col = getValid();
+		*/
 		while(!(personHidden.isValidStarting(row, col))) {
 			System.out.println("Invalid starting coordinate, this spot has already been taken.");
 
@@ -36,11 +42,22 @@ public class PlayerPersonWithGui extends Player {
 
 		}
 		
-		sn = b.setShip(s, personHidden.getHidden());
+		sn = b.setShip(s, personHidden.getHidden(), "ending");
 		int endRow = Integer.valueOf(sn)/10;
 		int endCol = Integer.valueOf(sn)%10;
 		System.out.println(endRow);
 		
+		/**
+		System.out.print("Please choose the direction for the " + s.getName() + " (up, down, left, or right) --> ");
+		String dir = getValidDirection();
+		
+		while(!(personHidden.isValidDirection(row, col, s.getLength(), dir))) {
+			System.out.println("Invalid direction, ship will not fit.");
+			
+			System.out.print("Pease enter another direction --> ");
+			dir = getValidDirection();
+		}
+		*/
 		String dir = "";
 		System.out.println("---");
 		System.out.println(row - endRow - 1);
@@ -63,13 +80,51 @@ public class PlayerPersonWithGui extends Player {
 		System.out.println(dir);
 		System.out.println("dninbdingbidgnbdignb");
 		
-		if (dir.contentEquals("")) {
+		if (dir.equals("")) {
 			b.sendErrorMessage("You cannot place a ship there. The ship must have a length of " + s.getLength());
 			setOneShip(s);
 			return;
 		}
 		
-		s.setShipCoordinate(row, col, dir, s.getLength() - 1);
+		String temp[][] = personHidden.getHidden();
+		if (dir.equals("down")) {
+			for (int i = 0; i < s.getLength(); i++) {
+				if (temp[row+i][col] != "-") {
+					b.sendErrorMessage("You cannot overlap ships");
+					setOneShip(s);
+					return;
+				}
+			}
+		}
+		if (dir.equals("up")) {
+			for (int i = 0; i < s.getLength(); i++) {
+				if (temp[row-i][col] != "-") {
+					b.sendErrorMessage("You cannot overlap ships");
+					setOneShip(s);
+					return;
+				}
+			}					
+		}
+		if (dir.equals("right")) {
+			for (int i = 0; i < s.getLength(); i++) {
+				if (temp[row][col+i] != "-") {
+					b.sendErrorMessage("You cannot overlap ships");
+					setOneShip(s);
+					return;
+				}
+			}			
+		}
+		if (dir.equals("left")) {
+			for (int i = 0; i < s.getLength(); i++) {
+				if (temp[row][col-i] != "-") {
+					b.sendErrorMessage("You cannot overlap ships");
+					setOneShip(s);
+					return;
+				}
+			}
+		}
+		
+		s.setShipCoordinate(row, col, dir);
 		setShipHidden(s.getCoordinates(), s.getID());
 		Board.printBoard(personHidden.getHidden());
 		System.out.println(row);
@@ -85,6 +140,7 @@ public class PlayerPersonWithGui extends Player {
 		setOneShip(submarine);
 		System.out.println();
 		setOneShip(destroyer);
+		b.closeWindow();
 		
 	}
 	
@@ -94,6 +150,34 @@ public class PlayerPersonWithGui extends Player {
 		}
 	}
 	
+//	private int getValidY() {
+//		String test = in.next();
+//		test = test.toLowerCase();
+//		boolean valid = true;
+//		
+//		if(test.compareTo("a") < 0 || test.compareTo("j") > 0) {
+//			valid = false;
+//		} else {
+//			valid = true;
+//		}
+//		
+//		String test1 = test;
+//		while(!valid) {
+//			System.out.print("Invalid coordinate, enter a valid coordinate from a to j--> ");
+//			
+//			test1 = in.next();
+//			if(test1.compareTo("a") < 0 || test1.compareTo("j") > 0) {
+//				valid = false;
+//			} else {
+//				valid = true;
+//			}
+//
+//		}
+//		
+//		char testChar = test1.charAt(0);
+//		
+//		return (testChar - 'a');
+//	}
 	
 	private int getValid() {
 		int test = in.nextInt();
