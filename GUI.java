@@ -3,9 +3,11 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Panel;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -24,6 +26,10 @@ public class GUI {
 	private boolean run;
 	int startX = -1;
 	int startY = -1;
+	ImageIcon boat = new ImageIcon("src/Boat.png");
+	ImageIcon fire = new ImageIcon("src/fire.png");
+	ImageIcon splash = new ImageIcon("src/splash.png");
+	
 	
 	public GUI() {
 
@@ -68,6 +74,7 @@ public class GUI {
 		}
 		
 		String text = name.getText();
+		
 		return text;
 		
 		
@@ -76,7 +83,7 @@ public class GUI {
 		
 	}
 	
-	public String setShip(Ships s, String[][] field) {
+	public String setShip(Ships s, String[][] field, String status) {
 		startX = -1;
 		startY = -1;
 		
@@ -99,7 +106,10 @@ public class GUI {
 				JButton button;
 				if (field[i][k] == "-") {
 					button = new JButton(" ");
-				}else {
+				}else if (field[i][k].equals("D") || field[i][k].equals("C") || field[i][k].equals("S")) {
+					button = new JButton(boat);
+				}
+				else {
 					button = new JButton(field[i][k]);
 				}
 				
@@ -130,7 +140,7 @@ public class GUI {
 		}
 		
 		
-		JLabel label = new JLabel("Please click the starting/ending point of your " + s.getName() + " ship. It is " + s.getLength() + " squares long.");
+		JLabel label = new JLabel("Please click the " + status + " point of your " + s.getName() + " ship. It is " + s.getLength() + " squares long.");
 		label.setBounds(0, 465, 1000, 100);
 		
 		GUI.setPreferredSize(new Dimension(515,575));
@@ -155,33 +165,125 @@ public class GUI {
 		
 		
 		return startX + "" + startY;
+		/**
+		
+		
+		run = false;
+		
+		GUI.getContentPane().removeAll();
+		GUI.repaint();
+		z.setLayout(new GridLayout(10,10));
+		z.setSize(500,500);
+		z.setBackground(new Color(125, 200, 225));
+		z.setBorder(BorderFactory.createLineBorder(new Color(25, 150, 200)));
+		for (int i = 0; i < 10; i++) {
+			for (int k = 0; k < 10; k++) {
+				JButton button;
+				if (i == startX && k == startY) {
+					button = new JButton(s.getName());
+				}else {
+					button = new JButton(" ");
+				}
+				button.setPreferredSize(new Dimension(50, 50));
+				//c.gridx = i;
+				//c.gridy = k;
+				z.add(button);
+				
+				int x = i;
+				int y = k;
+				
+				
+				button.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent ae) {
+						startX = x;
+						startY = y;
+						run = true;
+						System.out.print(startX + " " + startY);
+					}
+				});
+				
+				
+			}
+
+			
+		}
+		
+		GUI.setVisible(true);
+		*/
+		/**
+		run = false;
+		label = new JLabel("Please click the starting and ending point of your " + s.getName() + " ship. It is " + s.getLength() + " squares long");
+		
+		
+		
+		for (int i = 0; i < 10; i++) {
+			for (int k = 0; k < 10; k++) {
+				JButton button = new JButton("-");
+				GUI.add(button);
+				int x = i;
+				int y = k;
+				button.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent ae) {
+						endX = x;
+						endY = y;
+						run = true;
+						
+					}
+				});
+			}
+		}
+		
+		while (!run) {
+			System.out.print("");
+		}
+		
+		System.out.print(startX + startY + endX + endY);
+		
+		
+		*/
 	}
 	
 	
 	
 	public String printBoard(String[][] field, String[][] compField) {
-		
+		GUI.setBackground(Color.gray);
 		run = false;
 		GUI.getContentPane().removeAll();
 		GUI.repaint();
 		GUI.setLayout(null);
+		//JPanel grid = new JPanel();
+		//grid.setLayout(new GridLayout(10,10));
 		JPanel z = new JPanel();
 		z.setLayout(new GridLayout(10,10));
 		z.setSize(500,500);
 		z.setBackground(new Color(125, 200, 225));
 		z.setBorder(BorderFactory.createLineBorder(new Color(25, 150, 200)));
+		//z.setLayout(new GridLayout(10, 1));
+		//z.setLayout(new BoxLayout(z, BoxLayout.CENTER));
+		//z.setLayout(new GridLayout(10,10));
+		
 	    
 		for (int i = 0; i < 10; i++) {
 			for (int k = 0; k < 10; k++) {
 				JButton button;
 				if (field[i][k] == "-") {
 					button = new JButton(" ");
-				}else {
+				}else if (field[i][k].equals("X")){
+					button = new JButton(fire);					
+				}
+				else if (field[i][k].equals("D") || field[i][k].equals("C") || field[i][k].equals("S")) {
+					button = new JButton(boat);
+				}else if (field[i][k].equals("O")) {
+					button = new JButton(splash);
+				}
+				else {
 					button = new JButton(field[i][k]);
 				}
 				
 				
 				button.setPreferredSize(new Dimension(50, 50));
+				//c.gridx = i;
+				//c.gridy = k;
 				z.add(button);
 				
 				int x = i;
@@ -205,17 +307,30 @@ public class GUI {
 		c.setSize(500,500);
 		c.setBackground(new Color(225, 200, 125));
 		c.setBorder(BorderFactory.createLineBorder(new Color(25, 150, 200)));
+		//z.setLayout(new GridLayout(10, 1));
+		//z.setLayout(new BoxLayout(z, BoxLayout.CENTER));
+		//z.setLayout(new GridLayout(10,10));
+		
 	    
 		for (int i = 0; i < 10; i++) {
 			for (int k = 0; k < 10; k++) {
 				JButton button;
-				if (compField[i][k] == "-") {
+				if (compField[i][k].equals("-")) {
 					button = new JButton(" ");
-				}else {
+				}else if (compField[i][k].equals("X")) {
+					button = new JButton(fire);
+				}else if (compField[i][k].equals("D") || field[i][k].equals("S") || field[i][k].equals("C")) {
+					button = new JButton(boat);
+				}else if (compField[i][k].equals("O")) {
+					button = new JButton(splash);
+				}
+				else {
 					button = new JButton(compField[i][k]);
 				}
 				
 				button.setPreferredSize(new Dimension(50, 50));
+				//c.gridx = i;
+				//c.gridy = k;
 				c.add(button);
 				
 				int x = i;
@@ -238,26 +353,38 @@ public class GUI {
 			
 		}
 		
-		JLabel yours = new JLabel("Your side:");
-		JLabel computers = new JLabel("Computers side:");
+		JLabel yours = new JLabel("Home Base:");
+		yours.setBounds(0,0,500,50);
+		yours.setFont(new Font("Serif", Font.PLAIN, 50));
 		
+		JLabel computers = new JLabel("Enemy Base:");
+		computers.setBounds(500,0,500,50);
+		computers.setFont(new Font("Serif", Font.PLAIN, 50));
 		
-		GUI.setPreferredSize(new Dimension(1030,600));
+		JLabel messageToUser = new JLabel("Choose a location to attack");
+		messageToUser.setBounds(0,550,1000,50);
+		messageToUser.setFont(new Font("Serif", Font.PLAIN, 30));
+		
+		GUI.setPreferredSize(new Dimension(1000,650));
 		GUI.setResizable(true);
 
 		
 
 
-		z.setBounds(0, 0, 500, 500);
-		c.setBounds(500, 0, 500, 500);
+		z.setBounds(0, 50, 500, 500);
+		c.setBounds(500, 50, 500, 500);
 
+		//GUI.add(z, BorderLayout.WEST);
+		//GUI.add(c, BorderLayout.EAST);
 		
 		GUI.add(yours);
 		GUI.add(computers);
 		GUI.add(z);
 		GUI.add(c);
+		GUI.add(messageToUser);
 		GUI.pack();
 		GUI.setVisible(true);
+		GUI.setResizable(false);
 	
 		while (!run) {
 			System.out.print("");
@@ -271,6 +398,28 @@ public class GUI {
 		JOptionPane.showMessageDialog(GUI, s);
 	}
 	
+	public void sendEndMessage(String s) {
+		int answer = JOptionPane.showConfirmDialog(null, "Would you like to play another time?", "Game Over", JOptionPane.YES_OPTION, JOptionPane.NO_OPTION);
+		
+		if (answer == JOptionPane.YES_OPTION) {
+			GUI.getContentPane().removeAll();
+			GUI.repaint();
+			System.out.println("true");
+			closeWindow();
+			PlayGameWithGui pg = new PlayGameWithGui();
+			
+		}
+		if (answer == JOptionPane.NO_OPTION) {
+			GUI.setVisible(false);
+			GUI.dispose();
+		}
+		
+	}
+	
+	public void closeWindow() {
+		GUI.setVisible(false);
+		GUI.dispose();
+	}
 	
 	
 	
